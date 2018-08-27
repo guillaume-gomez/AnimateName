@@ -20,7 +20,23 @@ function init() {
 
         const color = 0x006699;
 
-        const matDark = new THREE.LineBasicMaterial( {
+        const lineText = writeText("hello world", font, color);
+
+        scene.add( lineText );
+
+    } ); //end load function
+
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+} // end init
+
+function writeText(message, font, color) {
+    const matDark = new THREE.LineBasicMaterial( {
             color: color,
             side: THREE.DoubleSide
         } );
@@ -31,8 +47,6 @@ function init() {
             opacity: 0.4,
             side: THREE.DoubleSide
         } );
-
-        const message = "YourName";
 
         const shapes = font.generateShapes( message, 100 );
 
@@ -85,23 +99,9 @@ function init() {
 
             const lineMesh = new THREE.Line( geometry, matDark );
             lineText.add( lineMesh );
-
-
-
         }
-
-        scene.add( lineText );
-
-    } ); //end load function
-
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    window.addEventListener( 'resize', onWindowResize, false );
-
-} // end init
+    return lineText;
+}
 
 function onWindowResize() {
 
