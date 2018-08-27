@@ -34,7 +34,7 @@ function init() {
             side: THREE.DoubleSide
         } );
 
-        var message = "   Three.js\nSimple text.";
+        const message = "YourName";
 
         var shapes = font.generateShapes( message, 100 );
 
