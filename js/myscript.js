@@ -13,7 +13,7 @@ function init() {
     controls.update();
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xf0f0f0 );
+    scene.background = new THREE.Color( 0xd0d0d0 );
 
     const loader = new THREE.FontLoader();
     loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
@@ -85,6 +85,8 @@ function init() {
 
             const lineMesh = new THREE.Line( geometry, matDark );
             lineText.add( lineMesh );
+
+
 
         }
 
