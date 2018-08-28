@@ -20,7 +20,14 @@ function init() {
 
         const color = 0x006699;
 
-        const lineText = writeText("hello world", font, color);
+        const shapes = font.generateShapes( "hello world", 100 );
+        const geometry = new THREE.ShapeBufferGeometry( shapes );
+        geometry.computeBoundingBox();
+        
+        const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+        const position = {x: xMid, y: 0, z: 0};
+       
+        const lineText = writeText(color, geometry, shapes, position);
 
         scene.add( lineText );
 
@@ -35,7 +42,7 @@ function init() {
 
 } // end init
 
-function writeText(message, font, color) {
+function writeText(color, geometry, shapes, position) {
     const matDark = new THREE.LineBasicMaterial( {
             color: color,
             side: THREE.DoubleSide
@@ -48,15 +55,7 @@ function writeText(message, font, color) {
             side: THREE.DoubleSide
         } );
 
-        const shapes = font.generateShapes( message, 100 );
-
-        const geometry = new THREE.ShapeBufferGeometry( shapes );
-
-        geometry.computeBoundingBox();
-
-        const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-
-        geometry.translate( xMid, 0, 0 );
+        geometry.translate(position.x, position.y, position.z );
 
         // make shape ( N.B. edge view not visible )
 
@@ -95,7 +94,7 @@ function writeText(message, font, color) {
             const points = shape.getPoints();
             let geometry = new THREE.BufferGeometry().setFromPoints( points );
 
-            geometry.translate( xMid, 0, 0 );
+            geometry.translate(position.x, position.y, position.z );
 
             const lineMesh = new THREE.Line( geometry, matDark );
             lineText.add( lineMesh );
