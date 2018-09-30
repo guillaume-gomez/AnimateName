@@ -29,33 +29,30 @@ var starViewer = {
     this.controls.enableKeys = false;
 
     // world
-    var geometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+    var geometry = new THREE.CylinderGeometry(0, 1, 1, 1, 1);
 
-    for (var i = 0; i < 10; i++) {
-      var material = new THREE.MeshBasicMaterial({
+    for (let i = 0; i < 4; i++) {
+
+      const material = new THREE.MeshBasicMaterial({
         color: 0xffffff
       });
 
-      var mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = (Math.random() - 0.5) * 1000;
-      mesh.position.y = (Math.random() - 0.5) * 1000;
-      mesh.position.z = (Math.random() - 0.5) * 1000;
+      let mesh = new THREE.Mesh(geometry, material);
+      mesh.position.x = (Math.random() - 0.5) * 500;
+      mesh.position.y = (Math.random() - 0.5) * 500;
+      mesh.position.z = (Math.random() - 0.5) * 500;
       mesh.updateMatrix();
       mesh.matrixAutoUpdate = false;
       //this.scene.add(mesh);
 
-      var text = this.createTextLabel();
-      text.setHTML(`Number${i}`);
+      let text = this.createTextLabel((i * 90));
+      text.setHTML(`YourName${i}`);
       text.setParent(mesh);
       this.textlabels.push(text);
       this.container.appendChild(text.element);
     }
 
-    //
-    // animate
-    //
-
-    var animate = () => {
+    const animate = () => {
       requestAnimationFrame(animate);
       this.controls.update();
       this.render();
@@ -70,21 +67,22 @@ var starViewer = {
   },
 
   render() {
-    for(var i=0; i<this.textlabels.length; i++) {
+    for(let i = 0; i < this.textlabels.length; i++) {
       this.textlabels[i].updatePosition();
     }
     this.renderer.render(this.scene, this.camera);
   },
 
-  createTextLabel() {
+  createTextLabel(rotationAngle) {
     var div = document.createElement('div');
     div.className = 'text-label';
     div.style.position = 'absolute';
     div.style.width = 100;
     div.style.height = 100;
-    div.innerHTML = "hi there!";
     div.style.top = -1000;
     div.style.left = -1000;
+    console.log(`rotate(${rotationAngle}deg)`)
+    div.style.transform = `rotate(${rotationAngle}deg)`;
 
     var _this = this;
 
