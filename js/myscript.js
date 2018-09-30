@@ -1,127 +1,124 @@
-var camera, scene, renderer;
+var starViewer = {
 
-init();
-animate();
+  // variables
+  camera: false,
+  controls: false,
+  scene: false,
+  renderer: false,
+  container: false,
+  textlabels: [],
 
-function init() {
+  onReady() {
+    this.scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
-    camera.position.set( 0, - 400, 600 );
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setClearColor(0x651fff);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    var controls = new THREE.OrbitControls( camera );
-    controls.target.set( 0, 0, 0 );
-    controls.update();
+    this.container.appendChild(this.renderer.domElement);
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xd0d0d0 );
+    this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 10000);
+    this.camera.position.z = 500;
 
-    const loader = new THREE.FontLoader();
-    loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor =  0.25;
+    this.controls.enableZoom = true;
+    this.controls.enablePan = false;
+    this.controls.enableKeys = false;
 
-        const color = 0x006699;
+    // world
+    var geometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
 
-        const shapes = font.generateShapes( "hello world", 100 );
-        const geometry = new THREE.ShapeBufferGeometry( shapes );
-        geometry.computeBoundingBox();
-        
-        const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
-        const position = {x: xMid, y: 0, z: 0};
-       
-        const lineText = writeText(color, geometry, shapes, position);
+    for (var i = 0; i < 10; i++) {
+      var material = new THREE.MeshBasicMaterial({
+        color: 0xffffff
+      });
 
-        scene.add( lineText );
+      var mesh = new THREE.Mesh(geometry, material);
+      mesh.position.x = (Math.random() - 0.5) * 1000;
+      mesh.position.y = (Math.random() - 0.5) * 1000;
+      mesh.position.z = (Math.random() - 0.5) * 1000;
+      mesh.updateMatrix();
+      mesh.matrixAutoUpdate = false;
+      //this.scene.add(mesh);
 
-    } ); //end load function
+      var text = this.createTextLabel();
+      text.setHTML(`Number${i}`);
+      text.setParent(mesh);
+      this.textlabels.push(text);
+      this.container.appendChild(text.element);
+    }
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    //
+    // animate
+    //
 
-    window.addEventListener( 'resize', onWindowResize, false );
+    var animate = () => {
+      requestAnimationFrame(animate);
+      this.controls.update();
+      this.render();
+    }
+    animate();
+  },
 
-} // end init
+  onResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  },
 
-function writeText(color, geometry, shapes, position) {
-    const matDark = new THREE.LineBasicMaterial( {
-            color: color,
-            side: THREE.DoubleSide
-        } );
+  render() {
+    for(var i=0; i<this.textlabels.length; i++) {
+      this.textlabels[i].updatePosition();
+    }
+    this.renderer.render(this.scene, this.camera);
+  },
 
-        const matLite = new THREE.MeshBasicMaterial( {
-            color: color,
-            transparent: true,
-            opacity: 0.4,
-            side: THREE.DoubleSide
-        } );
+  createTextLabel() {
+    var div = document.createElement('div');
+    div.className = 'text-label';
+    div.style.position = 'absolute';
+    div.style.width = 100;
+    div.style.height = 100;
+    div.innerHTML = "hi there!";
+    div.style.top = -1000;
+    div.style.left = -1000;
 
-        geometry.translate(position.x, position.y, position.z );
+    var _this = this;
 
-        // make shape ( N.B. edge view not visible )
-
-        const text = new THREE.Mesh( geometry, matLite );
-        text.position.z = - 150;
-        scene.add( text );
-
-        // make line shape ( N.B. edge view remains visible )
-
-        let holeShapes = [];
-
-        for ( let i = 0; i < shapes.length; i ++ ) {
-
-            const shape = shapes[ i ];
-
-            if ( shape.holes && shape.holes.length > 0 ) {
-
-                for ( let j = 0; j < shape.holes.length; j ++ ) {
-
-                    const hole = shape.holes[ j ];
-                    holeShapes.push( hole );
-
-                }
-
-            }
-
+    return {
+      element: div,
+      parent: false,
+      position: new THREE.Vector3(0,0,0),
+      setHTML(html) {
+        this.element.innerHTML = html;
+      },
+      setParent(threejsobj) {
+        this.parent = threejsobj;
+      },
+      updatePosition() {
+        if(parent) {
+          this.position.copy(this.parent.position);
         }
 
-        shapes.push.apply( shapes, holeShapes );
+        var coords2d = this.get2DCoords(this.position, _this.camera);
+        this.element.style.left = coords2d.x + 'px';
+        this.element.style.top = coords2d.y + 'px';
+      },
+      get2DCoords(position, camera) {
+        var vector = position.project(camera);
+        vector.x = (vector.x + 1)/2 * window.innerWidth;
+        vector.y = -(vector.y - 1)/2 * window.innerHeight;
+        return vector;
+      }
+    };
+  }
+};
 
-        const lineText = new THREE.Object3D();
-
-        for ( let i = 0; i < shapes.length; i ++ ) {
-            const shape = shapes[ i ];
-
-            const points = shape.getPoints();
-            let geometry = new THREE.BufferGeometry().setFromPoints( points );
-
-            geometry.translate(position.x, position.y, position.z );
-
-            const lineMesh = new THREE.Line( geometry, matDark );
-            lineText.add( lineMesh );
-        }
-    return lineText;
-}
-
-function onWindowResize() {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-function animate() {
-
-    requestAnimationFrame( animate );
-
-    render();
-
-}
-
-function render() {
-
-    renderer.render( scene, camera );
-
-}
-
+starViewer.container = document.getElementById('container');
+starViewer.onReady();
+window.addEventListener('resize', function() {
+  starViewer.onResize();
+}, false);
