@@ -28,25 +28,28 @@ var starViewer = {
     this.controls.enablePan = false;
     this.controls.enableKeys = false;
 
+    //find text from the url
+    const url = new URL(window.location);
+    const textToDisplay = url.searchParams.get("text") || "example";
     // world
     var geometry = new THREE.CylinderGeometry(0, 1, 1, 1, 1);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 200; i++) {
 
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff
       });
 
       let mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = (Math.random() - 0.5) * 500;
-      mesh.position.y = (Math.random() - 0.5) * 500;
-      mesh.position.z = (Math.random() - 0.5) * 500;
+      mesh.position.x = (Math.random() - 0.5) * 1000;
+      mesh.position.y = (Math.random() - 0.5) * 1000;
+      mesh.position.z = (Math.random() - 0.5) * 1000;
       mesh.updateMatrix();
       mesh.matrixAutoUpdate = false;
       //this.scene.add(mesh);
 
       let text = this.createTextLabel((i * 90));
-      text.setHTML(`YourName${i}`);
+      text.setHTML(textToDisplay);
       text.setParent(mesh);
       this.textlabels.push(text);
       this.container.appendChild(text.element);
@@ -81,7 +84,6 @@ var starViewer = {
     div.style.height = 100;
     div.style.top = -1000;
     div.style.left = -1000;
-    console.log(`rotate(${rotationAngle}deg)`)
     div.style.transform = `rotate(${rotationAngle}deg)`;
 
     var _this = this;
