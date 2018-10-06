@@ -30,11 +30,11 @@ var starViewer = {
 
     //find text from the url
     const url = new URL(window.location);
-    const textToDisplay = url.searchParams.get("text") || "example";
+    const textToDisplay = JSON.parse(url.searchParams.get("text")).lyrics || ["example"];
     // world
     var geometry = new THREE.CylinderGeometry(0, 1, 1, 1, 1);
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < textToDisplay.length; i++) {
 
       const material = new THREE.MeshBasicMaterial({
         color: 0xffffff
@@ -49,7 +49,7 @@ var starViewer = {
       //this.scene.add(mesh);
 
       let text = this.createTextLabel((i * 90));
-      text.setHTML(textToDisplay);
+      text.setHTML(textToDisplay[i]);
       text.setParent(mesh);
       this.textlabels.push(text);
       this.container.appendChild(text.element);
