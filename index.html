@@ -5,18 +5,6 @@
         <title>Text Animation</title>
     </head>
     <body>
-        <script type="text/javascript">
-            function submit() {
-                var textarea = document.getElementById("textarea");
-                var result = convertToJsonParam(textarea.value);
-                window.location.replace(`animated.html?text=${JSON.stringify(result)}`);
-            }
-
-            function convertToJsonParam(text) {
-                var lyrics = text.replace('\t', '').replace('.', '\n').split('\n');
-                return { lyrics };
-            }
-        </script>
         <legend>Write or copy/paste the lyrics' song</legend>
         <textarea id="textarea" rows="30" cols="100">
 Hier encore, j'avais vingt ans, je caressais le temps
@@ -54,5 +42,6 @@ Mes vingt ans
             Source
             <a href="https://github.com/guillaume-gomez/AnimateName">here</a>
         <p>
+        <script src="js/converter.js"></script>
     </body>
 </html>
