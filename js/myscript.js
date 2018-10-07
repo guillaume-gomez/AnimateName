@@ -48,11 +48,15 @@ var starViewer = {
       mesh.matrixAutoUpdate = false;
       //this.scene.add(mesh);
 
-      let text = this.createTextLabel((i * 90));
-      text.setHTML(textToDisplay[i]);
-      text.setParent(mesh);
-      this.textlabels.push(text);
-      this.container.appendChild(text.element);
+      const addText = () => {
+        let text = this.createTextLabel((i * 90));
+        text.setHTML(textToDisplay[i]);
+        text.setParent(mesh);
+        this.textlabels.push(text);
+        this.container.appendChild(text.element);
+      }
+
+      setTimeout(addText, i * 1000);
     }
 
     const animate = () => {
