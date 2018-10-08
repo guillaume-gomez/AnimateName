@@ -49,7 +49,7 @@ var starViewer = {
       //this.scene.add(mesh);
 
       const addText = () => {
-        let text = this.createTextLabel((i * 90));
+        let text = this.createTextLabel((i * 90), Math.random() * 40);
         text.setHTML(textToDisplay[i]);
         text.setParent(mesh);
         this.textlabels.push(text);
@@ -80,10 +80,12 @@ var starViewer = {
     this.renderer.render(this.scene, this.camera);
   },
 
-  createTextLabel(rotationAngle) {
+  createTextLabel(rotationAngle, fontSize) {
     var div = document.createElement('div');
     div.className = 'text-label';
     div.style.position = 'absolute';
+    div.style.fontSize = `${fontSize}px`;
+
     div.style.width = 100;
     div.style.height = 100;
     div.style.top = -1000;
