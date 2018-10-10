@@ -41,22 +41,24 @@ var starViewer = {
       });
 
       let mesh = new THREE.Mesh(geometry, material);
-      mesh.position.x = (Math.random() - 0.5) * 1000;
-      mesh.position.y = (Math.random() - 0.5) * 1000;
-      mesh.position.z = (Math.random() - 0.5) * 1000;
+      mesh.position.x = getRandomInt(-500, 500);
+      mesh.position.y = getRandomInt(-150, 150);
+      mesh.position.z = getRandomInt(-500, -100);
       mesh.updateMatrix();
       mesh.matrixAutoUpdate = false;
       //this.scene.add(mesh);
 
       const addText = () => {
-        let text = this.createTextLabel((i * 90), Math.random() * 40);
+        const fontSize = getRandomInt(14, 22);
+        //const rotationAngle = getRandomInt(0, 360);
+        let text = this.createTextLabel(i * 90, fontSize);
         text.setHTML(textToDisplay[i]);
         text.setParent(mesh);
         this.textlabels.push(text);
         this.container.appendChild(text.element);
       }
 
-      setTimeout(addText, i * 1000);
+      setTimeout(addText, i * 500);
     }
 
     const animate = () => {
@@ -128,3 +130,7 @@ starViewer.onReady();
 window.addEventListener('resize', function() {
   starViewer.onResize();
 }, false);
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
