@@ -1,41 +1,30 @@
 <html>
     <head>
         <meta charset="utf-8">
-    <script type="text/javascript" src="three.js"></script>
-    <script type="text/javascript" src="dat.gui.min.js"></script>
-    <script type="text/javascript" src="libgif.js"></script>
-    <script src="TrackballControls.js"></script>
-    
+    <script type="text/javascript" src="js/three.js"></script>
+    <script type="text/javascript" src="js/libgif.js"></script>
+    <script src="js/TrackballControls.js"></script>
     <style type="text/css">
       .jsgif {
         display: none;
       }
     </style>
-    
     </head>
     <body style="background:#ececec; margin:0px; padding:0px" onmousemove="update()">
-  <img id="example2" src="llama.gif" rel:auto_play="1" width="467" height="375" rel:rubbable="1" />
+  <img id="example2" src="https://media.giphy.com/media/TaBMIY5wKBvaw/giphy.gif" rel:auto_play="1" width="467" height="375" rel:rubbable="1" />
   <div id="container"></div>
 
+  <!-- ----- MAIN THREE.JS CODE ----- -->
 
-    
-    
-    
-  <!-- ----- MAIN THREE.JS CODE ----- -->   
- 
   <script type="text/javascript">
-  
-      
   var sup2 = new SuperGif({ gif: document.getElementById('example2') } );
   sup2.load();
   llamacanvas = sup2.get_canvas();
-  var ictx=llamacanvas.getContext("2d");
-        
   var camera, scene, renderer, container;
   var light, pointLight, geometry, mesh;
   var uniforms, material;
   var heightmap, diffTexture, dispTexture;
-  
+
   function start() {
     container = document.getElementById( 'container' );
     // --- WebGl render
@@ -68,52 +57,27 @@
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
     controls.addEventListener( 'change', render );
-    
     // --- Lights
-        
+
     pointLight = new THREE.PointLight( 0xffffff, 1.0 );
     scene.add( pointLight );
-    
-    pointLight.position.set(0, 100, -200);
-    
+    pointLight.position.set(0, 100, -400);
     // MATERIAL
-    dispTexture = new THREE.Texture(llamacanvas);
-    
-    var shader = THREE.ShaderLib[ "normalmap" ];
-    uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-    
-    uniforms[ "enableDisplacement" ] = { type: 'i', value: 1 };
-    uniforms[ "tDisplacement" ] = { type: 't', value: dispTexture };
-    uniforms[ "uDisplacementScale" ] = { type: 'f', value: 35 };
-    
-    uniforms[ "enableDiffuse" ] = { type: 'i', value: 1 };
-    uniforms[ "tDiffuse" ].value = dispTexture;
-    uniforms[ "tNormal" ] = { type: 't', value: new THREE.ImageUtils.loadTexture( 'flat.png' )};
-    
-    
-    
-    material = new THREE.ShaderMaterial( {
-            uniforms: uniforms,
-            vertexShader: shader.vertexShader,
-            fragmentShader: shader.fragmentShader,
-            lights: true,
-            side: THREE.DoubleSide
-    } );
-    
+    material = new THREE.MeshStandardMaterial();
+    material.map = new THREE.Texture( llamacanvas );
+    material.displacementMap = material.map;
     // GEOMETRY
     geometry = new THREE.PlaneGeometry(256, 200, 256, 200);
-    geometry.computeTangents();
     mesh = new THREE.Mesh( geometry, material);
     mesh.rotation.y = Math.PI;
     scene.add(mesh);
-    
+
     setInterval("update()", 30);
-   
     update();
   }
-  
+
   function update() {
-    dispTexture.needsUpdate = true;
+    material.map.needsUpdate = true;
     render();
     controls.update(); // trackball interaction
   }
@@ -121,33 +85,11 @@
     renderer.clear();
     renderer.render(scene, camera);
   }
-  
-  function log(n) {
-    console.log(n);
-  }
-  
-    // GUI
-  
-  var initDisp = function() {
-    this.scale = 25;
-  }
-  
-  
+
   window.onload = function() {
-    var disp = new initDisp();
-    var gui = new dat.GUI();
-    var scaleVal = 25.0;
-    
-        scControl = gui.add(disp, "scale", 0, 200);
-    scControl.onChange(function(value) {
-      scaleVal = value;
-      uniforms[ "uDisplacementScale" ].value = value;
-    });
     start();
     controls.update();
   }
             </script>
-      
-      
     </body>
 </html>
