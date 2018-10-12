@@ -4,6 +4,7 @@
     <script type="text/javascript" src="js/three.js"></script>
     <script type="text/javascript" src="js/libgif.js"></script>
     <script src="js/TrackballControls.js"></script>
+    <script src="js/OrbitControls.js"></script>
     <style type="text/css">
       .jsgif {
         display: none;
@@ -48,7 +49,12 @@
     camera.position.y = -800;
     camera.lookAt(scene.position);
     camera.updateMatrix();
-    controls = new THREE.TrackballControls( camera, renderer.domElement );
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor =  0.25;
+    controls.enableZoom = true;
+    controls.enablePan = false;
+    controls.enableKeys = false;
     controls.rotateSpeed = 3.0;
     controls.zoomSpeed = 1.2;
     controls.panSpeed = 0.8;
