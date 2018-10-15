@@ -53,7 +53,6 @@
 
     console.log(gifs.length)
     for(let i = 0; i < 1; i++) {
-      console.log(gifs[i])
       gifs[i].load();
       const gifcanvas = gifs[i].get_canvas();
       // MATERIAL
@@ -61,7 +60,7 @@
       material.map = new THREE.Texture( gifcanvas );
       material.displacementMap = material.map;
       // GEOMETRY
-      geometry = new THREE.PlaneGeometry(64, 50, 64, 50);
+      geometry = new THREE.PlaneGeometry(128, 100, 128, 100);
       mesh = new THREE.Mesh( geometry, material);
       mesh.rotation.y = Math.PI;
       mesh.position.x = 0 + (100 * i);
