@@ -1,7 +1,8 @@
 function submit() {
     var textarea = document.getElementById("textarea");
     var result = convertToJsonParam(textarea.value);
-    window.location.replace(`animated.html?text=${JSON.stringify(result)}`);
+    var encodedResult = encodeURI(JSON.stringify(result))
+    window.location.replace(`animated.html?text=${btoa(encodedResult)}`);
 }
 
 function convertToJsonParam(text) {
