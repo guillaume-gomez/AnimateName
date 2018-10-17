@@ -1,7 +1,29 @@
   let camera, scene, renderer, container;
-  let light, pointLight, geometry, mesh;
-  let uniforms, material;
-  let heightmap, diffTexture, dispTexture;
+  let light, pointLight;
+  let materials = [];
+
+  function createImgTags() {
+    const previewContainer = document.getElementById('previewContainer');
+    const urls = [
+      "https://media.giphy.com/media/nXxOjZrbnbRxS/giphy.gif",
+      "https://media.giphy.com/media/TaBMIY5wKBvaw/giphy.gif",
+      "https://media.giphy.com/media/12XMGIWtrHBl5e/giphy.gif",
+      "https://media.giphy.com/media/xUySTxVTWeEtJhEzsY/giphy.gif"
+    ];
+    for(let i = 0; i < urls.length; i++) {
+      createImgTag(previewContainer, `gif${i+1}`, urls[i]);
+    }
+  }
+
+  function createImgTag(parent, id, url, className = "gifClass") {
+    let img = document.createElement('img');
+    img.src = url;
+    img.id = id;
+    img.className = className;
+   // img.rel['rubbable'] = '1';
+   // img.rel['auto_play'] = '1';
+    parent.appendChild(img);
+  }
 
   function start() {
     container = document.getElementById( 'container' );
@@ -84,6 +106,10 @@
   }
 
   window.onload = function() {
-    start();
-    controls.update();
+    createImgTags();
+    const loadFunction = () => {
+      start();
+      controls.update();
+    }
+    setTimeout(loadFunction, 5000);
   }
