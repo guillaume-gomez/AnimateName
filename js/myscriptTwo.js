@@ -30,7 +30,8 @@ var starViewer = {
 
     //find text from the url
     const url = new URL(window.location);
-    const textToDisplay = url.searchParams.get("text") || "example";
+    const convertedParams = atob(url.searchParams.get("text"));
+    const textToDisplay = JSON.parse(decodeURI(convertedParams)).data || ["example"];
     // world
     var geometry = new THREE.CylinderGeometry(0, 1, 1, 1, 1);
     const positions = [
