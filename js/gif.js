@@ -4,12 +4,11 @@
 
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
-    const urls = [
-      "https://media.giphy.com/media/nXxOjZrbnbRxS/giphy.gif",
-      "https://media.giphy.com/media/TaBMIY5wKBvaw/giphy.gif",
-      "https://media.giphy.com/media/12XMGIWtrHBl5e/giphy.gif",
-      "https://media.giphy.com/media/xUySTxVTWeEtJhEzsY/giphy.gif"
-    ];
+    //get the gif urls from the url params
+    const url = new URL(window.location);
+    const convertedParams = atob(url.searchParams.get("text"));
+    const urls = JSON.parse(decodeURI(convertedParams)).data || ["https://media.giphy.com/media/nXxOjZrbnbRxS/giphy.gif"];
+    console.log(urls)
     for(let i = 0; i < urls.length; i++) {
       createImgTag(previewContainer, `gif${i+1}`, urls[i]);
     }
@@ -73,19 +72,25 @@
     scene.add( pointLight );
     pointLight.position.set(0, 100, -800);
 
-    console.log(gifs.length)
-    for(let i = 0; i < 1; i++) {
+    for(let i = 0; i < gifs.length; i++) {
       gifs[i].load();
+      //gifs[i].get_canvas().width = 128;
+      //gifs[i].get_canvas().height = 64;
       const gifcanvas = gifs[i].get_canvas();
       // MATERIAL
-      material = new THREE.MeshStandardMaterial();
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff
+      });
       material.map = new THREE.Texture( gifcanvas );
       material.displacementMap = material.map;
+      materials.push(material);
       // GEOMETRY
-      geometry = new THREE.PlaneGeometry(128, 100, 128, 100);
-      mesh = new THREE.Mesh( geometry, material);
+      const width = 128;
+      const height = 100;
+      const geometry = new THREE.PlaneGeometry(width, height, width, height);
+      const mesh = new THREE.Mesh( geometry, material);
       mesh.rotation.y = Math.PI;
-      mesh.position.x = 0 + (100 * i);
+      mesh.position.x = 0 + (width * i);
       //mesh.position.y = positions[i].y;
       //mesh.position.z = positions[i].z;
       scene.add(mesh);
@@ -96,7 +101,9 @@
   }
 
   function update() {
-    material.map.needsUpdate = true;
+    for(let i = 0; i < materials.length; i++) {
+      materials[i].map.needsUpdate = true;
+    }
     render();
     controls.update(); // trackball interaction
   }
