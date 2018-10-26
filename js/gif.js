@@ -72,6 +72,8 @@
     scene.add( pointLight );
     pointLight.position.set(0, 100, -800);
 
+    const middle = (Math.round((gifs.length / 2)) * 128) - 128/2;
+
     for(let i = 0; i < gifs.length; i++) {
       gifs[i].load();
       //gifs[i].get_canvas().width = 128;
@@ -90,9 +92,10 @@
       const geometry = new THREE.PlaneGeometry(width, height, width, height);
       const mesh = new THREE.Mesh( geometry, material);
       mesh.rotation.y = Math.PI;
-      mesh.position.x = 0 + (width * i);
-      //mesh.position.y = positions[i].y;
-      //mesh.position.z = positions[i].z;
+      console.log(- middle + (width * i))
+      mesh.position.x = - middle + (width * i);
+      //mesh.position.y = getRandomInt(-150, 150);
+      //mesh.position.z = getRandomInt(-500, -100);
       scene.add(mesh);
     }
 
