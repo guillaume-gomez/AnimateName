@@ -78,7 +78,6 @@
 
     for(let i = 0; i < gifs.length; i++) {
       gifs[i].load(() => {
-        console.log("loaded")
         //gifs[i].get_canvas().width = 128;
         //gifs[i].get_canvas().height = 64;
         const gifcanvas = gifs[i].get_canvas();
