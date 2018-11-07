@@ -1,7 +1,7 @@
   let camera, scene, renderer, container;
   let light, pointLight;
   let materials = [];
-
+  
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
     //get the gif urls from the url params
@@ -12,12 +12,15 @@
     for(let i = 0; i < urls.length; i++) {
       createImgTag(previewContainer, `gif${i+1}`, urls[i]);
     }
+    return urls.length;
   }
 
   function createImgTag(parent, id, url, className = "gifClass") {
     let img = document.createElement('img');
     img.src = url;
     img.id = id;
+    img.width = 128;
+    img.height = 128;
     img.className = className;
    // img.rel['rubbable'] = '1';
    // img.rel['auto_play'] = '1';
@@ -32,7 +35,6 @@
     for(let i = 0; i < gifItems.length ; i++) {
       gifs[i] = new SuperGif({ gif: gifItems[i] } );
     }
-
     // --- WebGl render
     try {
       renderer = new THREE.WebGLRenderer();
@@ -75,28 +77,29 @@
     const middle = (Math.round((gifs.length / 2)) * 128) - 128/2;
 
     for(let i = 0; i < gifs.length; i++) {
-      gifs[i].load();
-      //gifs[i].get_canvas().width = 128;
-      //gifs[i].get_canvas().height = 64;
-      const gifcanvas = gifs[i].get_canvas();
-      // MATERIAL
-      const material = new THREE.MeshStandardMaterial({
-        color: 0xffffff
+      gifs[i].load(() => {
+        console.log("loaded")
+        //gifs[i].get_canvas().width = 128;
+        //gifs[i].get_canvas().height = 64;
+        const gifcanvas = gifs[i].get_canvas();
+        // MATERIAL
+        const material = new THREE.MeshStandardMaterial({
+          color: 0xffffff
+        });
+        material.map = new THREE.Texture( gifcanvas );
+        material.displacementMap = material.map;
+        materials.push(material);
+        // GEOMETRY
+        const width = 128;
+        const height = 100;
+        const geometry = new THREE.PlaneGeometry(width, height, width, height);
+        const mesh = new THREE.Mesh( geometry, material);
+        mesh.rotation.y = Math.PI;
+        mesh.position.x = - middle + (width * i);
+        //mesh.position.y = getRandomInt(-150, 150);
+        //mesh.position.z = getRandomInt(-500, -100);
+        scene.add(mesh);
       });
-      material.map = new THREE.Texture( gifcanvas );
-      material.displacementMap = material.map;
-      materials.push(material);
-      // GEOMETRY
-      const width = 128;
-      const height = 100;
-      const geometry = new THREE.PlaneGeometry(width, height, width, height);
-      const mesh = new THREE.Mesh( geometry, material);
-      mesh.rotation.y = Math.PI;
-      console.log(- middle + (width * i))
-      mesh.position.x = - middle + (width * i);
-      //mesh.position.y = getRandomInt(-150, 150);
-      //mesh.position.z = getRandomInt(-500, -100);
-      scene.add(mesh);
     }
 
     setInterval("update()", 30);
@@ -116,10 +119,10 @@
   }
 
   window.onload = function() {
-    createImgTags();
+    const nbImages = createImgTags();
     const loadFunction = () => {
       start();
       controls.update();
     }
-    setTimeout(loadFunction, 5000);
+    setTimeout(loadFunction, nbImages * 100);
   }
