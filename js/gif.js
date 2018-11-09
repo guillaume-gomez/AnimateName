@@ -75,11 +75,10 @@
     scene.add( pointLight );
     pointLight.position.set(0, 100, -800);
 
-    const middle = (Math.round((gifs.length / 2)) * 128) - 128/2;
-
+    const positions = setPositions(gifs.length);
     for(let i = 0; i < gifs.length; i++) {
       gifs[i].load(() => {
-        //gifs[i].get_canvas().width = 128;
+        //gifs[i].get_canvas().width = WIDTH;
         //gifs[i].get_canvas().height = 64;
         const gifcanvas = gifs[i].get_canvas();
         // MATERIAL
@@ -90,12 +89,11 @@
         material.displacementMap = material.map;
         materials.push(material);
         // GEOMETRY
-        const width = 128;
         const height = 100;
-        const geometry = new THREE.PlaneGeometry(width, height, width, height);
+        const geometry = new THREE.PlaneGeometry(WIDTH, height, WIDTH, height);
         const mesh = new THREE.Mesh( geometry, material);
         mesh.rotation.y = Math.PI;
-        mesh.position.x = - middle + (width * i);
+        mesh.position.x = positions[i].x;
         //mesh.position.y = getRandomInt(-150, 150);
         //mesh.position.z = getRandomInt(-500, -100);
         scene.add(mesh);
@@ -104,6 +102,24 @@
 
     setInterval("update()", 30);
     update();
+  }
+
+  function setPositions(nbItems) {
+    const middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
+    let positions = [];
+    switch(nbItems) {
+      case 1:
+      case 2:
+      default:
+        for(let i = 0; i < nbItems; i++) {
+          positions.push({x: - middle + (WIDTH * i), y: 0, z: 0});
+        }
+      break;
+      case 3:
+        //"nothing to do for the moment"
+      break;
+    }
+    return positions;
   }
 
   function update() {
