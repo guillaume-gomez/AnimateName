@@ -1,6 +1,7 @@
   let camera, scene, renderer, container;
   let light, pointLight;
   let materials = [];
+  const WIDTH = 128;
   
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
@@ -19,8 +20,8 @@
     let img = document.createElement('img');
     img.src = url;
     img.id = id;
-    img.width = 128;
-    img.height = 128;
+    img.width = WIDTH;
+    img.height = WIDTH;
     img.className = className;
    // img.rel['rubbable'] = '1';
    // img.rel['auto_play'] = '1';
