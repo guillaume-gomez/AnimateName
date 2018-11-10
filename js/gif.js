@@ -111,8 +111,10 @@
       case 1:
       case 2:
       default:
+        const offset = 5;
         for(let i = 0; i < nbItems; i++) {
-          positions.push({x: - middle + (WIDTH * i), y: 0, z: 0});
+          console.log(- middle + (WIDTH * i) + offset)
+          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
         }
       break;
       case 3:
