@@ -2,6 +2,7 @@
   let light, pointLight;
   let materials = [];
   const WIDTH = 128;
+  const HEIGHT = 128;
   
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
@@ -21,7 +22,7 @@
     img.src = url;
     img.id = id;
     img.width = WIDTH;
-    img.height = WIDTH;
+    img.height = HEIGHT;
     img.className = className;
    // img.rel['rubbable'] = '1';
    // img.rel['auto_play'] = '1';
@@ -89,8 +90,7 @@
         material.displacementMap = material.map;
         materials.push(material);
         // GEOMETRY
-        const height = 100;
-        const geometry = new THREE.PlaneGeometry(WIDTH, height, WIDTH, height);
+        const geometry = new THREE.PlaneGeometry(WIDTH, HEIGHT, WIDTH, HEIGHT);
         const mesh = new THREE.Mesh( geometry, material);
         mesh.rotation.y = Math.PI;
         mesh.position.x = positions[i].x;
