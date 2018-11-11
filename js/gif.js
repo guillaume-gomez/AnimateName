@@ -94,7 +94,7 @@
         const mesh = new THREE.Mesh( geometry, material);
         mesh.rotation.y = Math.PI;
         mesh.position.x = positions[i].x;
-        //mesh.position.y = getRandomInt(-150, 150);
+        mesh.position.y = positions[i].y;
         //mesh.position.z = getRandomInt(-500, -100);
         scene.add(mesh);
       });
@@ -105,20 +105,23 @@
   }
 
   function setPositions(nbItems) {
-    const middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
+    let middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
     let positions = [];
+    const offset = 5;
     switch(nbItems) {
+      case 3:
+        middle = WIDTH - WIDTH/2;
+        for(let i = 0; i < 2; i++) {
+          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
+        }
+        positions.push({x: 0, y: HEIGHT + offset, z:0});
+      break;
       case 1:
       case 2:
       default:
-        const offset = 5;
         for(let i = 0; i < nbItems; i++) {
           positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
         }
-      break;
-      case 3:
-
-        //"nothing to do for the moment"
       break;
     }
     return positions;
