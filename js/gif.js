@@ -113,11 +113,11 @@
       default:
         const offset = 5;
         for(let i = 0; i < nbItems; i++) {
-          console.log(- middle + (WIDTH * i) + offset)
           positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
         }
       break;
       case 3:
+
         //"nothing to do for the moment"
       break;
     }
