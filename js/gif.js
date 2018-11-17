@@ -1,6 +1,8 @@
   let camera, scene, renderer, container;
   let light, pointLight;
   let materials = [];
+  const WIDTH = 128;
+  const HEIGHT = 128;
   
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
@@ -18,8 +20,8 @@
     let img = document.createElement('img');
     img.src = url;
     img.id = id;
-    img.width = 128;
-    img.height = 128;
+    img.width = WIDTH;
+    img.height = HEIGHT;
     img.className = className;
    // img.rel['rubbable'] = '1';
    // img.rel['auto_play'] = '1';
@@ -72,11 +74,10 @@
     pointLight = new THREE.PointLight( 0xffffff, 1.0 );
     scene.add( pointLight );
     pointLight.position.set(0, 100, -800);
-    const middle = (Math.round((gifs.length / 2)) * 128) - 128/2;
-
+    const positions = setPositions(gifs.length);
     for(let i = 0; i < gifs.length; i++) {
       gifs[i].load(() => {
-        //gifs[i].get_canvas().width = 128;
+        //gifs[i].get_canvas().width = WIDTH;
         //gifs[i].get_canvas().height = 64;
         const gifcanvas = gifs[i].get_canvas();
         // MATERIAL
@@ -87,13 +88,11 @@
         material.displacementMap = material.map;
         materials.push(material);
         // GEOMETRY
-        const width = 128;
-        const height = 100;
-        const geometry = new THREE.PlaneGeometry(width, height, width, height);
+        const geometry = new THREE.PlaneGeometry(WIDTH, HEIGHT, WIDTH, HEIGHT);
         const mesh = new THREE.Mesh( geometry, material);
         mesh.rotation.y = Math.PI;
-        mesh.position.x = - middle + (width * i);
-        //mesh.position.y = getRandomInt(-150, 150);
+        mesh.position.x = positions[i].x;
+        mesh.position.y = positions[i].y;
         //mesh.position.z = getRandomInt(-500, -100);
         scene.add(mesh);
       });
@@ -101,6 +100,29 @@
 
     setInterval("update()", 30);
     update();
+  }
+
+  function setPositions(nbItems) {
+    let middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
+    let positions = [];
+    const offset = 5;
+    switch(nbItems) {
+      case 3:
+        middle = WIDTH - WIDTH/2;
+        for(let i = 0; i < 2; i++) {
+          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
+        }
+        positions.push({x: 0, y: HEIGHT + offset, z:0});
+      break;
+      case 1:
+      case 2:
+      default:
+        for(let i = 0; i < nbItems; i++) {
+          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
+        }
+      break;
+    }
+    return positions;
   }
 
   function update() {
