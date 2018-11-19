@@ -77,7 +77,7 @@
     pointLight.position.set(0, 100, -800);
 
     const positions = setPositions(gifs.length);
-    for(let i = 0; i < gifs.length; i++) {
+    for(let i = 0; i < positions.length; i++) {
       gifs[i].load(() => {
         //gifs[i].get_canvas().width = WIDTH;
         //gifs[i].get_canvas().height = 64;
