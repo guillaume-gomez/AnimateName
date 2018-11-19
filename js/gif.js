@@ -118,12 +118,25 @@
       break;
       case 1:
       case 2:
-      default:
         for(let i = 0; i < nbItems; i++) {
           positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
         }
       break;
+      default:
+        const itemsByRow = 4;
+        const rows = Math.round(nbItems / itemsByRow);
+        let middleX = (Math.round((itemsByRow / 2)) * WIDTH) - WIDTH/2;
+        let middleY = (Math.round((rows / 2)) * HEIGHT) - HEIGHT/2;
+        for(let row = 0; row < rows; row++) {
+          for(let column = 0; column < itemsByRow; column++) {
+            positions.push({x: - middleX + ((WIDTH + offset) * column), y: - middleY + row * (HEIGHT + offset), z: 0});
+          }
+        }
+        // todo
+        // add the last gifs
+      break
     }
+    console.log(positions)
     return positions;
   }
 
