@@ -3,6 +3,7 @@
   let materials = [];
   const WIDTH = 128;
   const HEIGHT = 128;
+  const OFFSET = 5;
   
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
@@ -104,39 +105,42 @@
     update();
   }
 
+  function writeRow(positionRef, nbItemsByRow, yOFFSET) {
+    let positions = positionRef.slice();
+    let middleX = (Math.floor((nbItemsByRow / 2)) * WIDTH) - WIDTH/2;
+    for(let column = 0; column < nbItemsByRow; column++) {
+      positions.push({x: - middleX + ((WIDTH + OFFSET) * column), y: yOFFSET, z: 0});
+    }
+    return positions;
+  }
+
   function setPositions(nbItems) {
     let middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
     let positions = [];
-    const offset = 5;
     switch(nbItems) {
       case 3:
         middle = WIDTH - WIDTH/2;
         for(let i = 0; i < 2; i++) {
-          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
+          positions.push({x: - middle + ((WIDTH + OFFSET) * i), y: 0, z: 0});
         }
-        positions.push({x: 0, y: HEIGHT + offset, z:0});
+        positions.push({x: 0, y: HEIGHT + OFFSET, z:0});
       break;
       case 1:
       case 2:
         for(let i = 0; i < nbItems; i++) {
-          positions.push({x: - middle + ((WIDTH + offset) * i), y: 0, z: 0});
+          positions.push({x: - middle + ((WIDTH + OFFSET) * i), y: 0, z: 0});
         }
       break;
       default:
         const itemsByRow = 4;
-        const rows = Math.round(nbItems / itemsByRow);
-        let middleX = (Math.round((itemsByRow / 2)) * WIDTH) - WIDTH/2;
+        const rows = Math.floor(nbItems / itemsByRow);
         let middleY = (Math.round((rows / 2)) * HEIGHT) - HEIGHT/2;
         for(let row = 0; row < rows; row++) {
-          for(let column = 0; column < itemsByRow; column++) {
-            positions.push({x: - middleX + ((WIDTH + offset) * column), y: - middleY + row * (HEIGHT + offset), z: 0});
-          }
+          positions = writeRow(positions, itemsByRow, - middleY + row * (HEIGHT + OFFSET));
         }
-        // todo
-        // add the last gifs
+        positions = writeRow(positions, nbItems % itemsByRow, -middleY + rows * (HEIGHT + OFFSET));
       break
     }
-    console.log(positions)
     return positions;
   }
 
