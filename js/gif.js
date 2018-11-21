@@ -11,7 +11,6 @@
     const url = new URL(window.location);
     const convertedParams = atob(url.searchParams.get("text"));
     const urls = JSON.parse(decodeURI(convertedParams)).data || ["https://media.giphy.com/media/nXxOjZrbnbRxS/giphy.gif"];
-    console.log(urls)
     for(let i = 0; i < urls.length; i++) {
       createImgTag(previewContainer, `gif${i+1}`, urls[i]);
     }
@@ -76,7 +75,6 @@
     pointLight = new THREE.PointLight( 0xffffff, 1.0 );
     scene.add( pointLight );
     pointLight.position.set(0, 100, -800);
-
     const positions = setPositions(gifs.length);
     for(let i = 0; i < positions.length; i++) {
       gifs[i].load(() => {
