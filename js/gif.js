@@ -4,6 +4,7 @@
   const WIDTH = 128;
   const HEIGHT = 128;
   const OFFSET = 5;
+  let gifsCache = {};
   
   function createImgTags() {
     const previewContainer = document.getElementById('previewContainer');
@@ -11,7 +12,6 @@
     const url = new URL(window.location);
     const convertedParams = atob(url.searchParams.get("text"));
     const urls = JSON.parse(decodeURI(convertedParams)).data || ["https://media.giphy.com/media/nXxOjZrbnbRxS/giphy.gif"];
-    console.log(urls)
     for(let i = 0; i < urls.length; i++) {
       createImgTag(previewContainer, `gif${i+1}`, urls[i]);
     }
@@ -80,8 +80,6 @@
     const positions = setPositions(gifs.length);
     for(let i = 0; i < positions.length; i++) {
       gifs[i].load(() => {
-        //gifs[i].get_canvas().width = WIDTH;
-        //gifs[i].get_canvas().height = 64;
         const gifcanvas = gifs[i].get_canvas();
         // MATERIAL
         const material = new THREE.MeshStandardMaterial({
@@ -107,7 +105,7 @@
 
   function writeRow(positionRef, nbItemsByRow, yOFFSET) {
     let positions = positionRef.slice();
-    let middleX = (Math.floor((nbItemsByRow / 2)) * WIDTH) - WIDTH/2;
+    let middleX = (nbItemsByRow / 2) * (WIDTH + OFFSET) - WIDTH/2;
     for(let column = 0; column < nbItemsByRow; column++) {
       positions.push({x: - middleX + ((WIDTH + OFFSET) * column), y: yOFFSET, z: 0});
     }
@@ -115,7 +113,7 @@
   }
 
   function setPositions(nbItems) {
-    let middle = (Math.round((nbItems / 2)) * WIDTH) - WIDTH/2;
+    let middle = (nbItems / 2) * (WIDTH + OFFSET);
     let positions = [];
     switch(nbItems) {
       case 3:
@@ -132,13 +130,13 @@
         }
       break;
       default:
-        const itemsByRow = 4;
+        const itemsByRow = 5;
         const rows = Math.floor(nbItems / itemsByRow);
         let middleY = (Math.round((rows / 2)) * HEIGHT) - HEIGHT/2;
         for(let row = 0; row < rows; row++) {
           positions = writeRow(positions, itemsByRow, - middleY + row * (HEIGHT + OFFSET));
         }
-        positions = writeRow(positions, nbItems % itemsByRow, -middleY + rows * (HEIGHT + OFFSET));
+        positions = writeRow(positions, nbItems % itemsByRow, - middleY + rows * (HEIGHT + OFFSET));
       break
     }
     return positions;
